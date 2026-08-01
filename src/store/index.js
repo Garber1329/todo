@@ -1,6 +1,8 @@
 import { configureStore, combineReducers} from "@reduxjs/toolkit";
 import todoReducer from './todoSlice'
 import userReducer from './userSlice'
+import filterReducer from "./filterSlice";
+import themeReducer from "./themeSlice";
 import {
   persistStore,
   persistReducer,
@@ -14,7 +16,9 @@ import {
 
 const rootReducer = combineReducers({
   todos: todoReducer,
-  user: userReducer
+  user: userReducer,
+  filters: filterReducer,
+  theme: themeReducer,
 });
 
 // const storage = {
@@ -30,7 +34,7 @@ const persistConfig = {
   key: 'root',
   storage,
   version: 2,
-  whitelist: ['todos', 'user']
+  whitelist: ['todos', 'user', 'filters', 'theme'], // Specify which slices to persist
 }
  
 const persistedReducer = persistReducer(persistConfig, rootReducer)

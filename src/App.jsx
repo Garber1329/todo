@@ -7,6 +7,8 @@ import TodoList from './components/TodoList'
 import { fetchTodos } from './store/todoThunks'
 import Header from './components/Header'
 import { selectTodos, selectIsAuth } from './store/selectors'
+import Filters from './components/Filters'
+import ThemeBodyClass from './components/ThemeBodyClass'
 
 function App() {
   const [text, setText] = useState('')
@@ -22,6 +24,7 @@ function App() {
 
   return (
     <>
+      <ThemeBodyClass />
       <Header />
       <h1>ToDo</h1>
 
@@ -30,6 +33,7 @@ function App() {
         <button onClick={() => dispatch(addTodoFetch(text))}>Add Todo</button>
       </label>
 
+      <Filters />
       <TodoList />
     </>
   )

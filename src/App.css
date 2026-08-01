@@ -186,3 +186,14 @@
 input[type='checkbox']:checked + span {
   text-decoration: line-through;
 }
+
+.theme-light {
+  background: radial-gradient(circle at top left, rgba(170, 59, 255, 0.12), transparent 40%),
+    #5432db;
+}
+
+.theme-dark {
+  background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.2), transparent 40%),
+    #141625;
+  color: #e8e9ff;
+}

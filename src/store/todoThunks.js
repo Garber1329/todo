@@ -14,6 +14,19 @@ export const fetchTodos = createAsyncThunk(
     }
   },
 );
+export const fetchTodosWithUsers = createAsyncThunk(
+  "todos/fetchTodosWithUsers",
+  async (_, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `https://jsonplaceholder.typicode.com/todos?_expand=user&_limit=10`,
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  },
+);
 
 export const addTodoFetch = createAsyncThunk(
   "todos/addTodoFetch",
