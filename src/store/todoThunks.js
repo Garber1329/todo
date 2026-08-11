@@ -19,7 +19,7 @@ export const fetchTodosWithUsers = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await axios.get(
-        `https://jsonplaceholder.typicode.com/todos?_expand=user&_limit=10`,
+        `https://jsonplaceholder.typicode.com/todos?_expand=user`,
       );
       return response.data;
     } catch (error) {
@@ -66,7 +66,7 @@ export const deleteTodoFetch = createAsyncThunk(
 export const toggleTodoFetch = createAsyncThunk(
   "todos/toggleTodoFetch",
   async (id, thunkAPI) => {
-    const todo = thunkAPI.getState().todos.todos.find(todo => todo.id === id);
+    const todo = thunkAPI.getState().todos.entities[id];
     if (!todo) {
       return thunkAPI.rejectWithValue("Todo not found");
     }

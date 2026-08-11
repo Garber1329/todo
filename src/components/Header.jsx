@@ -1,23 +1,25 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { useState } from 'react'
-import { login, logout } from '../store/userSlice'
+import { login, logout } from '../store/authUserSlice'
 import { clearTodos } from '../store/todoSlice'
 import { persistor } from '../store'
 import { selectIsAuth, selectUser } from '../store/selectors'
 import { TodoCounter } from "./TodoCounter";
 import ToggleTheme from "./ToggleTheme";
+import { loginUser } from '../store/authTodo'
 
 const Header = () => {
     const dispatch = useDispatch()
     const user = useSelector(selectUser)
     const isAuth = useSelector(selectIsAuth)
-    const [username, setUsername] = useState('')
+
+    const [username, setUsername] = useState('emilys')
+    const [password, setPassword] = useState('emilyspass')
 
     const handleLogin = (e) => {
         e.preventDefault()
-        if (username.trim()) {
-            dispatch(login({ user: username }))
-            setUsername('')
+        if (username.trim() && password.trim()) {
+            dispatch(loginUser({username, password}))
         }
     }
     const handleLogout = async () => {

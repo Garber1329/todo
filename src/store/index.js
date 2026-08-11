@@ -1,8 +1,9 @@
 import { configureStore, combineReducers} from "@reduxjs/toolkit";
 import todoReducer from './todoSlice'
-import userReducer from './userSlice'
+import authReducer from './authUserSlice'
 import filterReducer from "./filterSlice";
 import themeReducer from "./themeSlice";
+import usersReducer from "./usersSlice";
 import {
   persistStore,
   persistReducer,
@@ -14,18 +15,21 @@ import {
   REGISTER,
 } from 'redux-persist'
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   todos: todoReducer,
-  user: userReducer,
+  auth: authReducer,
   filters: filterReducer,
   theme: themeReducer,
+  users: usersReducer,
 });
 
-// const storage = {
-//     getItem: (key) => Promise.resolve(localStorage.getItem(key)),
-//     setItem: (key, value) => Promise.resolve(localStorage.setItem(key, value)),
-//     removeItem: (key) => Promise.resolve(localStorage.removeItem(key)),
-// }
+const rootReducer = (state, action) => {
+  if (action.type === "auth/logout" || action.type === "auth/sessionExpired"){
+    storage.removeItem('persist:root')
+    state = undefined
+  }
+  return appReducer(state, action);
+}
 
 // import storageSession from 'redux-persist/es/storage/session' 
 import storage from 'redux-persist/es/storage'
@@ -34,7 +38,7 @@ const persistConfig = {
   key: 'root',
   storage,
   version: 2,
-  whitelist: ['todos', 'user', 'filters', 'theme'], // Specify which slices to persist
+  whitelist: ['todos', 'auth', 'filters', 'theme'], // Specify which slices to persist
 }
  
 const persistedReducer = persistReducer(persistConfig, rootReducer)

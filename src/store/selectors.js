@@ -1,9 +1,11 @@
 import { createSelector } from "@reduxjs/toolkit";
+import { selectTodos } from "./todoSlice";
 
-export const selectIsAuth = (state) => state.user.isAuth;
-export const selectUser = (state) => state.user.user;
+export const selectIsAuth = (state) => state.auth.isAuth;
+export const selectUser = (state) => state.auth.username;
+export const selectToken = (state) => state.auth.token;
 
-export const selectTodos = (state) => state.todos.todos;
+// export const selectTodos = (state) => state.todos.todos;
 export const selectTodoStatus = (state) => state.todos.status;
 export const selectTodoError = (state) => state.todos.error;
 export const selectActiveFilter = state => state.filters;

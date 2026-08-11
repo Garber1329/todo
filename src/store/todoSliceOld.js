@@ -1,27 +1,33 @@
-import { createSlice, createEntityAdapter } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
-  // fetchTodos,
+  fetchTodos,
   deleteTodoFetch,
   addTodoFetch,
   toggleTodoFetch,
-  fetchTodosWithUsers,
 } from "./todoThunks";
 
-const todosAdapter = createEntityAdapter({
-  // selectId: (todo) => todo.id,
-  sortComparer: (a, b) => a.title.localeCompare(b.title),
-});
+/*
+const pendingHelper = (state) => {
+    state.loading = true;
+    state.error = null;
+}
+
+const rejectedHelper = (state, action) => {
+    state.loading = false;
+    state.error = action.payload;
+}
+*/
 
 const todoSlice = createSlice({
   name: "todos",
-  initialState: todosAdapter.getInitialState({
-    previousTodos: null,
+  initialState: {
+    todos: [],
     loading: false,
     error: null,
-  }),
+  },
   reducers: {
     addTodo(state, action) {
-      todosAdapter.setOne(state, {
+      state.todos.push({
         id: new Date().toISOString(),
         title: action.payload,
         completed: false,
@@ -37,56 +43,40 @@ const todoSlice = createSlice({
       state.todos = state.todos.filter((todo) => todo.id !== action.payload);
     },
     clearTodos(state) {
-      todosAdapter.removeAll(state);
+      state.todos = [];
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTodosWithUsers.fulfilled, (state, action) => {
+      .addCase(fetchTodos.fulfilled, (state, action) => {
         state.loading = false;
-        const todosWithOutUsers = action.payload.map((todo) => {
-          // eslint-disable-next-line no-unused-vars
-          const { user, ...todoWithoutUser } = todo;
-          return todoWithoutUser;
-        });
-        todosAdapter.setAll(state, todosWithOutUsers);
+        state.todos = action.payload;
       })
-      // .addCase(fetchTodos.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   // state.todos = action.payload;
-      //   todosAdapter.setAll(state, action.payload);
-      // })
       .addCase(addTodoFetch.fulfilled, (state, action) => {
         state.loading = false;
-        todosAdapter.addOne(state, action.payload);
+        state.todos.push(action.payload);
       })
       .addCase(deleteTodoFetch.fulfilled, (state, action) => {
         state.loading = false;
-        todosAdapter.removeOne(state, action.payload);
+        state.todos = state.todos.filter((todo) => todo.id !== action.payload);
       })
       // оптимістичне оновлення стану при зміні completed
       .addCase(toggleTodoFetch.pending, (state, action) => {
-        const idForToggle = action.meta.arg;
-        const todo = state.entities[idForToggle];
+        const todo = state.todos.find((todo) => todo.id === action.meta.arg);
         if (todo) {
-          todosAdapter.updateOne(state, {
-            id: idForToggle,
-            changes: { completed: !todo.completed },
-          });
+          todo.completed = !todo.completed;
         }
       })
-      // .addCase(toggleTodoFetch.fulfilled, (state, action) => {
-      //   state.loading = false;
-      // })
+      //   .addCase(toggleTodoFetch.fulfilled, (state, action) => {
+      //     state.loading = false;
+      //   })
       // повернення стану при помилці
       .addCase(toggleTodoFetch.rejected, (state, action) => {
-        const idForToggle = action.meta.arg;
-        const todo = state.entities[idForToggle];
+        state.loading = false;
+        state.error = action.payload;
+        const todo = state.todos.find((todo) => todo.id === action.meta.arg);
         if (todo) {
-          todosAdapter.updateOne(state, {
-            id: idForToggle,
-            changes: { completed: !todo.completed },
-          });
+          todo.completed = !todo.completed;
         }
       })
 
@@ -124,9 +114,3 @@ export const {
 } = todoSlice.actions;
 
 export default todoSlice.reducer;
-
-export const {
-  selectAll: selectTodos,
-  selectById: selectTodoById,
-  selectIds: selectTodoIds,
-} = todosAdapter.getSelectors((state) => state.todos);
