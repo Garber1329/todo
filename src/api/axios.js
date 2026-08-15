@@ -51,10 +51,10 @@ api.interceptors.response.use(
         })
 
         if(newRefreshToken){
-            localStorage.setItem("refreshToken", data.token);
+            localStorage.setItem("refreshToken", newRefreshToken);
         }
         
-        error.config.headers.Authorization = `Bearer ${data.token}`;
+        error.config.headers.Authorization = `Bearer ${newAccesToken}`;
         return axios(error.config); // Retry the original request
       } catch (error) {
         localStorage.removeItem("refreshToken");

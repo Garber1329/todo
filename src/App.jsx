@@ -22,7 +22,7 @@ function App() {
   const isRenderRef = useRef(false)
 
   useEffect(() => {
-    if (token && isRenderRef) {
+    if (token && !isRenderRef.current) {
       isRenderRef.current = true;
 
       dispatch(fetchCurrentUser())

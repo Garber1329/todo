@@ -14,15 +14,15 @@ export const loginUser = createAsyncThunk(
       const token = response.data.accessToken;
       const refreshToken = response.data.refreshToken;
       
+      if(token){
+        thunkAPI.dispatch({type: "auth/setNewToken", payload: token})
+      }
+
       if (refreshToken){
         localStorage.setItem("refreshToken", refreshToken);
       }
 
-      const userRes = await api.get(`/user/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass JWT via Authorization header
-        },
-      });
+      const userRes = await api.get(`/user/me`);
 
       return {
         token,
@@ -43,11 +43,7 @@ export const fetchCurrentUser = createAsyncThunk(
 
       if(!token) return thunkAPI.rejectWithValue('Token undefind')
 
-      const res = await api.get(`/auth/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`, // Pass JWT via Authorization header
-        },
-      });
+      const res = await api.get(`/auth/me`);
 
       return res.data
     } catch (error) {
