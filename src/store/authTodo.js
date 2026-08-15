@@ -1,19 +1,24 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import api from "../api/axios";
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ username, password }, thunkAPI) => {
     try {
-      const response = await axios.post(`https://dummyjson.com/auth/login`, {
+      const response = await api.post(`/auth/login`, {
         username,
         password,
         expiresInMins: 1,
       });
 
       const token = response.data.accessToken;
+      const refreshToken = response.data.refreshToken;
+      
+      if (refreshToken){
+        localStorage.setItem("refreshToken", refreshToken);
+      }
 
-      const userRes = await axios.get(`https://dummyjson.com/user/me`, {
+      const userRes = await api.get(`/user/me`, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass JWT via Authorization header
         },
@@ -38,7 +43,7 @@ export const fetchCurrentUser = createAsyncThunk(
 
       if(!token) return thunkAPI.rejectWithValue('Token undefind')
 
-      const res = await axios.get(`https://dummyjson.com/auth/me`, {
+      const res = await api.get(`/auth/me`, {
         headers: {
           Authorization: `Bearer ${token}`, // Pass JWT via Authorization header
         },

@@ -26,11 +26,6 @@ function App() {
       isRenderRef.current = true;
 
       dispatch(fetchCurrentUser())
-        .unwrap()
-        .catch(() => {
-          dispatch({ type: "auth/sessionExpired" })
-        })
-
     }
   }, [dispatch, token])
 

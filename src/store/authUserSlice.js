@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { loginUser } from "./authTodo";
+// import { loginUser } from "./authTodo";
 
 const initialState = {
     username: '',
@@ -17,14 +17,18 @@ const authUserSlice = createSlice({
         logout() {
             return initialState; 
         },
+        setNewToken(state, action){
+            state.token = action.payload,
+            state.isAuth = true
+        }
     },
     extraReducers: builder =>{
         builder
-        .addCase(loginUser.pending, state => {
+        .addCase('auth/loginUser/pending', state => {
             state.status = 'loading',
             state.error = null
         })
-        .addCase(loginUser.fulfilled, (state, action) => {
+        .addCase('auth/loginUser/fulfilled', (state, action) => {
             state.status = 'success',
             state.error = null,
             state.isAuth = true,
@@ -32,7 +36,7 @@ const authUserSlice = createSlice({
             state.userProfile  = action.payload.user,
             state.username  = action.payload.user.username
         })
-        .addCase(loginUser.rejected, (state, action) => {
+        .addCase('auth/loginUser/rejected', (state, action) => {
             state.status = 'rejected',
             state.error = action.payload
         })
