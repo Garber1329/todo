@@ -1,19 +1,18 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import './App.css'
-// import { addTodo } from './store/todoSlice'
-import { addTodoFetch } from './store/todoThunks'
-import TodoList from './components/TodoList'
+
 import { fetchTodosWithUsers } from './store/todoThunks'
-import Header from './components/Header'
 import { selectIsAuth, selectToken } from './store/selectors'
 import { selectTodos } from './store/todoSlice'
-import Filters from './components/Filters'
 import ThemeBodyClass from './components/ThemeBodyClass'
 import { fetchCurrentUser } from './store/authTodo'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { PrivateRoute, RistrectdRoute } from './components/Routes'
+import { LoginPage } from './pages/LoginPage'
+import { TodosPage } from './pages/TodosPage'
 
 function App() {
-  const [text, setText] = useState('')
   const dispatch = useDispatch()
   const todos = useSelector(selectTodos)
   const isAuth = useSelector(selectIsAuth)
@@ -38,16 +37,18 @@ function App() {
   return (
     <>
       <ThemeBodyClass />
-      <Header />
-      <h1>ToDo</h1>
-
-      <label htmlFor="">
-        <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-        <button onClick={() => dispatch(addTodoFetch(text))}>Add Todo</button>
-      </label>
-
-      <Filters />
-      <TodoList />
+      <Routes>
+        <Route path='/' element={<Navigate to='todos/' replace />}/>
+        <Route 
+          path='/login'
+          element={<RistrectdRoute component={LoginPage} redirectTo='/todos'/>}
+        />
+        <Route 
+          path='/todos'
+          element={<PrivateRoute component={TodosPage} redirectTo='/login'/>}
+        />
+         <Route path='*' element={<Navigate to='todos/' replace />}/>
+      </Routes>
     </>
   )
 }

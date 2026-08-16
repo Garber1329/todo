@@ -7,6 +7,7 @@ import { selectIsAuth, selectUser } from '../store/selectors'
 import { TodoCounter } from "./TodoCounter";
 import ToggleTheme from "./ToggleTheme";
 import { loginUser } from '../store/authTodo'
+import { Modal } from './Modal'
 
 const Header = () => {
     const dispatch = useDispatch()
@@ -15,6 +16,8 @@ const Header = () => {
 
     const [username, setUsername] = useState('emilys')
     const [password, setPassword] = useState('emilyspass')
+
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     const handleLogin = (e) => {
         e.preventDefault()
@@ -53,6 +56,12 @@ const Header = () => {
                     </div>
                 )}
             </div>
+
+            <button onClick={() => setIsModalOpen(true)}>Відкрити модалку</button>
+
+            <Modal isOpen={isModalOpen} onClose={()=> setIsModalOpen(false)}>
+                <h2>Modal</h2>
+            </Modal>
         </header>
     )
 }
